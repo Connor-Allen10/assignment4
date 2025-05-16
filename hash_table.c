@@ -46,7 +46,15 @@ int hash_function2(struct hash_table* hash_table, char* key) {
    * to modify it to create an improved hash function: 
    */
 
-  return ( (int) key[0] ) % hash_table->size;
+  int hash = 0;
+
+  //use first 3 characters if available
+  for(int i=0; i < 3 && key[i] != '\0'; i++){
+	hash += (unsigned char)key[i] * (i+1); //weight each char by position
+  }
+
+  return hash % hash_table->size;
+
 }
 
 struct hash_table* hash_table_create(int array_size) {
@@ -192,9 +200,23 @@ int hash_table_collisions(struct hash_table* hash_table) {
   int num_col = 0;
   
   // code goes here: 
+  for(int i = 0; i < hash_table->size; i++){
+	  struct node* current = hash_table->array[i];
+	  int count = 0;
 
+	  while(current != NULL){ //count nodes in bucket
+		  count++;
+		  current = current->next;
+	  }
+
+	  if(count > 1) { // if more than one node, count-1 collisions
+		  num_col += (count - 1);
+	  }
+  }
   return num_col;
 }
+
+
 
 void display(struct hash_table* hash_table) {
   
