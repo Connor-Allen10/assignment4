@@ -91,6 +91,7 @@ void hash_table_free(struct hash_table* hash_table) {
       current  = hash_table->array[i];
     }
   }
+  free(hash_table->array);
   free(hash_table);
 }
 
